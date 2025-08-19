@@ -1,0 +1,44 @@
+package handlers
+
+import (
+	"net/http"
+	"smartjob/internal/requests"
+	"smartjob/internal/responses"
+	"smartjob/internal/services"
+
+	"github.com/gin-gonic/gin"
+)
+
+type ApplicationHandler struct {
+	ApplicationService services.ApplicationService
+}
+
+func NewApplicationHandler(AppS *services.ApplicationService) *ApplicationHandler {
+	return &ApplicationHandler{*AppS}
+}
+
+func (h *ApplicationHandler) SubmitApplication() gin.HandlerFunc {
+	return func(ctx *gin.Context) {
+		var req requests.ApplicationRequest
+
+		if err := ctx.ShouldBindJSON(&req); err != nil {
+			responses.ErrorResponse(ctx, http.StatusBadRequest, "SUBMIT_APPLICATION_ERROR", &responses.APIError{
+				Code:    "BIND_ERROR",
+				Details: err,
+			})
+			return
+		}
+
+		userID, _ := ctx.Get("user_id")
+
+		err := h.ApplicationService.Create(&req, userID.(uint))
+		if err != nil {
+			responses.ErrorResponse(ctx, http.StatusBadRequest, "SUBMIT_APPLICATION_ERROR", &responses.APIError{
+				Code:    "SERVICE_ERROR",
+				Details: err,
+			})
+			return
+		}
+		responses.SuccessResponse(ctx, http.StatusCreated, "success", nil)
+	}
+}
