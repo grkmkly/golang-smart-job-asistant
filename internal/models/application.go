@@ -12,5 +12,5 @@ type Application struct {
 	UserID     uint    `gorm:"index:idx_user_jobpost,unique"`
 	User       User    `gorm:"foreignKey:UserID"`
 
-	Answer []UserAnswer `gorm:"foreignKey:ApplicationID"`
+	Answer []UserAnswer `gorm:"foreignKey:ApplicationID;references:ID"`
 }

@@ -53,6 +53,7 @@ func (h *AuthHandler) RegisterUser() gin.HandlerFunc {
 				Code:    "REGISTER_BIND_FAILED",
 				Details: err.Error(),
 			})
+			return
 		}
 		// RegisterUser
 		user, err := h.AuthService.RegisterUser(req)

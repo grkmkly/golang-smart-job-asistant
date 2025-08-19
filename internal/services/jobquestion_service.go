@@ -27,18 +27,34 @@ func (s *JobQuestionService) Create(reqs []requests.JobQuestionRequest) error {
 	}
 	return nil
 }
-func (s *JobQuestionService) GetQuestionForPost(postID uint) ([]responses.JobQuestionUserResponse, error) {
+func (s *JobQuestionService) GetQuestionUserForPost(postID uint) ([]responses.JobQuestionUserResponse, error) {
 
 	var jobQuestion []models.JobQuestion
 	err := s.DB.Preload("Question").
 		Preload("Question.Options").
-		Preload("JobPost").
 		Where("job_post_id = ?", postID).
 		Find(&jobQuestion).Error
 	if err != nil {
 		return nil, err
 	}
-	questionsResponse, err := mappers.JobQuestionsToResponse(jobQuestion)
+	questionsResponse, err := mappers.JobQuestionsToUserResponse(jobQuestion)
+	if err != nil {
+		return nil, err
+	}
+	return questionsResponse, nil
+}
+
+func (s *JobQuestionService) GetQuestionAdminForPost(applicationID uint) ([]responses.JobQuestionAdminResponse, error) {
+	var jobQuestion []models.JobQuestion
+
+	err := s.DB.Preload("Question").
+		Preload("Question.Options").
+		Where("job_post_id = ?", applicationID).
+		Find(&jobQuestion).Error
+	if err != nil {
+		return nil, err
+	}
+	questionsResponse, err := mappers.JobQuestionsToAdminResponse(jobQuestion)
 	if err != nil {
 		return nil, err
 	}

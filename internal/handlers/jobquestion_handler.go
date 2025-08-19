@@ -40,7 +40,7 @@ func (h *JobQuestionHandler) CreateJobQuestion() gin.HandlerFunc {
 	}
 }
 
-func (h *JobQuestionHandler) GetQuestionForPost() gin.HandlerFunc {
+func (h *JobQuestionHandler) GetQuestionUserForPost() gin.HandlerFunc {
 	return func(ctx *gin.Context) {
 
 		jobpostIDStr := ctx.Param("jobpostID")
@@ -51,10 +51,35 @@ func (h *JobQuestionHandler) GetQuestionForPost() gin.HandlerFunc {
 				Details: err,
 			})
 		}
-		jobQuestions, err := h.JobQuestionService.GetQuestionForPost(uint(postID))
+		jobQuestions, err := h.JobQuestionService.GetQuestionUserForPost(uint(postID))
 
 		if err != nil {
 			responses.ErrorResponse(ctx, http.StatusInternalServerError, "GET_QUESTION_FOR_POST_ERROR", &responses.APIError{
+				Code:    "SERVICE_ERROR",
+				Details: err,
+			})
+			return
+		}
+		responses.SuccessResponse(ctx, http.StatusOK, "success", jobQuestions)
+	}
+}
+
+func (h *JobQuestionHandler) GetQuestionAdminForPost() gin.HandlerFunc {
+	return func(ctx *gin.Context) {
+
+		jobpostIDStr := ctx.Param("jobpostID")
+		jobpostID, err := strconv.ParseUint(jobpostIDStr, 10, 32)
+		if err != nil {
+			responses.ErrorResponse(ctx, http.StatusInternalServerError, "GET_QUESTION_ADMIN_FOR_POST_ERROR", &responses.APIError{
+				Code:    "PARSE_ERROR",
+				Details: err,
+			})
+			return
+		}
+		jobQuestions, err := h.JobQuestionService.GetQuestionAdminForPost(uint(jobpostID))
+
+		if err != nil {
+			responses.ErrorResponse(ctx, http.StatusInternalServerError, "GET_QUESTION_ADMIN_FOR_POST_ERROR", &responses.APIError{
 				Code:    "SERVICE_ERROR",
 				Details: err,
 			})

@@ -1,14 +1,10 @@
 package responses
 
 import (
-	"smartjob/internal/models"
 	"time"
-
-	"gorm.io/gorm"
 )
 
 type QuestionUserResponse struct {
-	gorm.Model
 	Content string           `json:"content"`
 	Type    string           `json:"type"`
 	Options []OptionResponse `json:"options"`
@@ -18,10 +14,9 @@ type OptionResponse struct {
 	Value string `json:"value"`
 }
 type QuestionAdminResponse struct {
-	gorm.Model
 	Content   string           `json:"content"`
 	Type      string           `json:"type"`
 	Options   []OptionResponse `json:"options"`
-	CreatedBy models.User      `json:"created_by"`
+	CreatedBy UserResponse     `json:"created_by"`
 	CreatedAt time.Time        `json:"created_at"`
 }

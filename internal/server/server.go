@@ -45,7 +45,8 @@ func NewServer() *Server {
 	jobpostService := *services.NewJobPostService(db)
 	questionService := *services.NewQuestionService(db)
 	jobQuestionService := *services.NewJobQuestionService(db)
-	applicationService := *services.NewApplicationService(db)
+	criteriaControlService := *services.NewCriteriaControlService(db)
+	applicationService := *services.NewApplicationService(db, &criteriaControlService)
 
 	//Handlers
 	authHandler := *handlers.NewAuthHandler(&authService)

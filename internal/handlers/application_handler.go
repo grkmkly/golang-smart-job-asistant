@@ -5,6 +5,7 @@ import (
 	"smartjob/internal/requests"
 	"smartjob/internal/responses"
 	"smartjob/internal/services"
+	"strconv"
 
 	"github.com/gin-gonic/gin"
 )
@@ -30,8 +31,17 @@ func (h *ApplicationHandler) SubmitApplication() gin.HandlerFunc {
 		}
 
 		userID, _ := ctx.Get("user_id")
+		postID := ctx.Param("jobpostID")
+		postIDUint, err := strconv.ParseUint(postID, 10, 32)
+		if err != nil {
+			responses.ErrorResponse(ctx, http.StatusBadRequest, "SUBMIT_APPLICATION_ERROR", &responses.APIError{
+				Code:    "PARSE_ERROR",
+				Details: err,
+			})
+			return
+		}
 
-		err := h.ApplicationService.Create(&req, userID.(uint))
+		err = h.ApplicationService.Create(&req, userID.(uint), uint(postIDUint))
 		if err != nil {
 			responses.ErrorResponse(ctx, http.StatusBadRequest, "SUBMIT_APPLICATION_ERROR", &responses.APIError{
 				Code:    "SERVICE_ERROR",
@@ -40,5 +50,28 @@ func (h *ApplicationHandler) SubmitApplication() gin.HandlerFunc {
 			return
 		}
 		responses.SuccessResponse(ctx, http.StatusCreated, "success", nil)
+	}
+}
+
+func (h *ApplicationHandler) GetApplicationsByPostID() gin.HandlerFunc {
+	return func(ctx *gin.Context) {
+		postID := ctx.Param("post_id")
+		postIDUint, err := strconv.ParseUint(postID, 10, 32)
+		if err != nil {
+			responses.ErrorResponse(ctx, http.StatusBadRequest, "GET_APPLICATIONS_ERROR", &responses.APIError{
+				Code:    "PARSE_ERROR",
+				Details: err,
+			})
+			return
+		}
+		response, err := h.ApplicationService.GetApplicationByPostIdWithCriteria((uint(postIDUint)))
+		if err != nil {
+			responses.ErrorResponse(ctx, http.StatusBadRequest, "GET_APPLICATIONS_ERROR", &responses.APIError{
+				Code:    "SERVICE_ERROR",
+				Details: err,
+			})
+			return
+		}
+		responses.SuccessResponse(ctx, http.StatusOK, "success", response)
 	}
 }

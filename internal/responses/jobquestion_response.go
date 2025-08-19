@@ -1,13 +1,18 @@
 package responses
 
 type JobQuestionUserResponse struct {
-	CriteriaValue    string `gorm:"type:varchar(255);column:criteria_value"`
-	CriteriaOperator string `gorm:"type:varchar(50);column:criteria_operator"`
-	QuestionOrder    int    `gorm:"column:question_order"`
+	QuestionOrder int `json:"question_order"`
 
-	QuestionID uint                 `gorm:"not null"`
-	Question   QuestionUserResponse `gorm:"foreignKey:QuestionID"`
+	QuestionID uint                 `json:"question_id"`
+	Question   QuestionUserResponse `json:"question"`
 
-	JobPostID uint `gorm:"not null"`
-	//	JobPost   models.JobPost `gorm:"foreignKey:JobPostID"`
+	//JobPostID uint `json:"job_post_id"`
+}
+type JobQuestionAdminResponse struct {
+	CriteriaValue    string `json:"criteria_value"`
+	CriteriaOperator string `json:"criteria_operator"`
+	QuestionOrder    int    `json:"question_order"`
+
+	QuestionID uint                  `json:"question_id"`
+	Question   QuestionAdminResponse `json:"question"`
 }

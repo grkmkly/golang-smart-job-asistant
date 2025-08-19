@@ -29,24 +29,44 @@ func ReqsToJobQuestion(reqs []requests.JobQuestionRequest) ([]models.JobQuestion
 }
 
 // MODEL TO RESPONSE
-func JobQuestionModelToResponse(m *models.JobQuestion) (responses.JobQuestionUserResponse, error) {
+func JobQuestionModelToUserResponse(m models.JobQuestion) (responses.JobQuestionUserResponse, error) {
 	question := QuestionToUserResponse(&m.Question)
 	return responses.JobQuestionUserResponse{
-		CriteriaValue:    m.CriteriaValue,
-		CriteriaOperator: m.CriteriaOperator,
-		QuestionID:       m.QuestionID,
-		JobPostID:        m.JobPostID,
-		QuestionOrder:    m.QuestionOrder,
-		Question:         *question,
-		//JobPost:          m.JobPost,
+		QuestionID:    m.QuestionID,
+		QuestionOrder: m.QuestionOrder,
+		Question:      *question,
 	}, nil
 }
 
 // MODEL ARRAY TO RESPONSE
-func JobQuestionsToResponse(m []models.JobQuestion) ([]responses.JobQuestionUserResponse, error) {
+func JobQuestionsToUserResponse(m []models.JobQuestion) ([]responses.JobQuestionUserResponse, error) {
 	var jobQuestionsResponses []responses.JobQuestionUserResponse
+
 	for _, jq := range m {
-		jobQuestionResponse, err := JobQuestionModelToResponse(&jq)
+		jobQuestionResponse, err := JobQuestionModelToUserResponse(jq)
+		if err != nil {
+			return nil, err
+		}
+		jobQuestionsResponses = append(jobQuestionsResponses, jobQuestionResponse)
+	}
+	return jobQuestionsResponses, nil
+}
+func JobQuestionModelToAdminResponse(m models.JobQuestion) (responses.JobQuestionAdminResponse, error) {
+	question := QuestionToAdminResponse(&m.Question)
+	return responses.JobQuestionAdminResponse{
+		CriteriaValue:    m.CriteriaValue,
+		CriteriaOperator: m.CriteriaOperator,
+		QuestionOrder:    m.QuestionOrder,
+		QuestionID:       m.QuestionID,
+		Question:         *question,
+	}, nil
+}
+
+func JobQuestionsToAdminResponse(m []models.JobQuestion) ([]responses.JobQuestionAdminResponse, error) {
+	var jobQuestionsResponses []responses.JobQuestionAdminResponse
+
+	for _, jq := range m {
+		jobQuestionResponse, err := JobQuestionModelToAdminResponse(jq)
 		if err != nil {
 			return nil, err
 		}

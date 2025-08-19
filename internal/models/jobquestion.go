@@ -12,6 +12,6 @@ type JobQuestion struct {
 	//Question
 	QuestionID uint     `gorm:"not null"`
 	Question   Question `gorm:"foreignKey:QuestionID"`
-	// Job Post
+
 	JobPostID uint `gorm:"not null"`
 }

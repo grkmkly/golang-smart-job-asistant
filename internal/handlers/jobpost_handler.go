@@ -52,5 +52,17 @@ func (h *JobPostHandler) ListJobPosts() gin.HandlerFunc {
 		}
 		responses.SuccessResponse(ctx, http.StatusOK, "success", jobposts)
 	}
-
+}
+func (h *JobPostHandler) ListJobPostsForAdmin() gin.HandlerFunc {
+	return func(ctx *gin.Context) {
+		jobposts, err := h.JobPostService.GetActiveAndNotExpiredPostForAdmin()
+		if err != nil {
+			responses.ErrorResponse(ctx, http.StatusInternalServerError, "LIST_JOB_POSTS_ERROR", &responses.APIError{
+				Code:    "JOB_POST_SERVICE_ERROR",
+				Details: err,
+			})
+			return
+		}
+		responses.SuccessResponse(ctx, http.StatusOK, "success", jobposts)
+	}
 }

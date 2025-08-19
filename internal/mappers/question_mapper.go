@@ -14,7 +14,7 @@ func QuestionRequestToQuestion(req *requests.QuestionRequest, userID uint) *mode
 		for i, optReq := range req.Options {
 			options = append(options, models.QuestionOption{
 				OptionValue: optReq.OptionValue,
-				Priority:    i,
+				Priority:    len(req.Options) - i,
 			})
 		}
 	}
@@ -42,7 +42,6 @@ func QuestionToUserResponse(q *models.Question) *responses.QuestionUserResponse 
 		Content: q.Content,
 		Type:    q.Type,
 		Options: options,
-		Model:   q.Model,
 	}
 }
 
@@ -72,8 +71,7 @@ func QuestionToAdminResponse(q *models.Question) *responses.QuestionAdminRespons
 		Content:   q.Content,
 		Type:      q.Type,
 		Options:   options,
-		Model:     q.Model,
-		CreatedBy: q.CreatedBy,
+		CreatedBy: *UserModelToResponse(&q.CreatedBy),
 	}
 }
 

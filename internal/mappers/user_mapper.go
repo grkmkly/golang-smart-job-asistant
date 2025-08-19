@@ -3,6 +3,7 @@ package mappers
 import (
 	"smartjob/internal/models"
 	"smartjob/internal/requests"
+	"smartjob/internal/responses"
 	"smartjob/internal/utils"
 )
 
@@ -23,4 +24,18 @@ func RegisterRequestToUser(req requests.RegisterRequest) (models.User, error) {
 		IsActive:     true,
 	}
 	return newUser, nil
+}
+
+func UserModelToResponse(user *models.User) *responses.UserResponse {
+	if user == nil {
+		return nil
+	}
+
+	response := &responses.UserResponse{
+		ID:        user.ID,
+		FirstName: user.FirstName,
+		Surname:   user.Surname,
+		Email:     user.Email,
+	}
+	return response
 }
