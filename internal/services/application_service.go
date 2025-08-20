@@ -30,7 +30,7 @@ func (s *ApplicationService) Create(req *requests.ApplicationRequest, userID uin
 	return nil
 }
 
-func (s *ApplicationService) GetApplicationsByPostID(postID uint) ([]responses.ApplicationResponse, error) {
+func (s *ApplicationService) GetApplicationsByPostID(postID uint) ([]responses.ApplicationAdminResponse, error) {
 	var applications []models.Application
 
 	result := s.DB.
@@ -46,7 +46,7 @@ func (s *ApplicationService) GetApplicationsByPostID(postID uint) ([]responses.A
 	if result.Error != nil {
 		return nil, result.Error
 	}
-	responses, err := mappers.ApplicationModelsToResponseSlice(applications)
+	responses, err := mappers.ApplicationModelsToAdminResponseSlice(applications)
 	if err != nil {
 		return nil, err
 	}
@@ -80,8 +80,35 @@ func (s *ApplicationService) GetApplicationByPostIdWithCriteria(postID uint) ([]
 	}
 
 	var suitableResponses []responses.ResponseSuitable
+
 	for _, application := range applications {
 		suitableResponses = append(suitableResponses, s.CriteriaControlService.CriteriaControl(application)...)
 	}
 	return suitableResponses, nil
+}
+
+func (s *ApplicationService) UpdateApplicationStatus(applicationID uint, status string) error {
+
+	result := s.DB.Model(&models.Application{}).
+		Where("id = ?", applicationID).
+		Update("status", status)
+	if result.Error != nil {
+		return result.Error
+	}
+	if result.Error != nil {
+		return result.Error
+	}
+	return nil
+}
+
+func (s *ApplicationService) GetApplicationForUser(userID uint) ([]responses.ApplicationUserResponse, error) {
+	var application []models.Application
+
+	result := s.DB.
+		Preload("JobPost").Where("user_id = ? ", userID).Find(&application)
+	if result.Error != nil {
+		return nil, result.Error
+	}
+	responses := mappers.ApplicationModelsToUserResponseSlice(application)
+	return responses, nil
 }

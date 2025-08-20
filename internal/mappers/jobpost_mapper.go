@@ -6,7 +6,7 @@ import (
 	"smartjob/internal/responses"
 )
 
-// REQ TO MODEL
+// Request JobPost To JobPost Model
 func JobPostRequestToJobPost(req *requests.JobPostRequest, userID uint) (*models.JobPost, error) {
 	jobQuestions, err := ReqsToJobQuestion(req.JobQuestion)
 	if err != nil {
@@ -23,34 +23,28 @@ func JobPostRequestToJobPost(req *requests.JobPostRequest, userID uint) (*models
 	}, err
 }
 
-// MODEL TO RESPONSE
-func JobPostModelToUserResponse(jobPost *models.JobPost) (*responses.JobPostUserResponse, error) {
-	//jobQuestions, err := JobQuestionsToResponse(jobPost.JobQuestions)
-	//if err != nil {
-	//	return nil, err
-	//}
+// JobPost Model To Response JobPost for User
+func JobPostModelToUserResponse(jobPost *models.JobPost) *responses.JobPostUserResponse {
 	return &responses.JobPostUserResponse{
 		Title:       jobPost.Title,
 		Content:     jobPost.Content,
 		EndAt:       jobPost.EndAt,
 		IsActive:    jobPost.IsActive,
 		CreatedByID: jobPost.CreatedByID,
-		//JobQuestions: jobQuestions,
-	}, nil
+	}
 }
 
+// JobPost Slice Model To Response JobPost Slice for User
 func JobPostModelToUserResponseSlice(jobPosts *[]models.JobPost) ([]responses.JobPostUserResponse, error) {
 	var responses []responses.JobPostUserResponse
 	for _, jobPost := range *jobPosts {
-		response, err := JobPostModelToUserResponse(&jobPost)
-		if err != nil {
-			return nil, err
-		}
+		response := JobPostModelToUserResponse(&jobPost)
 		responses = append(responses, *response)
 	}
 	return responses, nil
 }
 
+// JobPost Model To Response JobPost for Admin
 func JobPostModelToAdminResponse(jobPost *models.JobPost) (*responses.JobPostAdminResponse, error) {
 	jobQuestions, err := JobQuestionsToAdminResponse(jobPost.JobQuestions)
 	if err != nil {
@@ -66,6 +60,7 @@ func JobPostModelToAdminResponse(jobPost *models.JobPost) (*responses.JobPostAdm
 	}, nil
 }
 
+// JobPost Slice Model To Response JobPost Slice for Admin
 func JobPostModelToAdminResponseSlice(jobPosts *[]models.JobPost) ([]responses.JobPostAdminResponse, error) {
 	var responses []responses.JobPostAdminResponse
 	for _, jobPost := range *jobPosts {

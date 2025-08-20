@@ -55,7 +55,7 @@ func (h *ApplicationHandler) SubmitApplication() gin.HandlerFunc {
 
 func (h *ApplicationHandler) GetApplicationsByPostID() gin.HandlerFunc {
 	return func(ctx *gin.Context) {
-		postID := ctx.Param("post_id")
+		postID := ctx.Param("jobpostID")
 		postIDUint, err := strconv.ParseUint(postID, 10, 32)
 		if err != nil {
 			responses.ErrorResponse(ctx, http.StatusBadRequest, "GET_APPLICATIONS_ERROR", &responses.APIError{
@@ -73,5 +73,40 @@ func (h *ApplicationHandler) GetApplicationsByPostID() gin.HandlerFunc {
 			return
 		}
 		responses.SuccessResponse(ctx, http.StatusOK, "success", response)
+	}
+}
+func (h *ApplicationHandler) UpdateStatus() gin.HandlerFunc {
+	return func(ctx *gin.Context) {
+		appID := ctx.Param("applicationID")
+		appIDUint, err := strconv.ParseUint(appID, 10, 32)
+		if err != nil {
+			responses.ErrorResponse(ctx, http.StatusBadRequest, "UPDATE_APPLICATIONS_ERROR", &responses.APIError{
+				Code:    "PARSE_ERROR",
+				Details: err,
+			})
+			return
+		}
+		var status requests.StatusRequest
+		if err := ctx.ShouldBindJSON(&status); err != nil {
+			responses.ErrorResponse(ctx, http.StatusBadRequest, "UPDATE_APPLICATIONS_ERROR", &responses.APIError{
+				Code:    "BIND_ERROR",
+				Details: err,
+			})
+			return
+		}
+		err = h.ApplicationService.UpdateApplicationStatus(uint(appIDUint), status.Status)
+		if err != nil {
+			responses.ErrorResponse(ctx, http.StatusBadRequest, "UPDATE_APPLICATIONS_ERROR", &responses.APIError{
+				Code:    "SERVICE_ERROR",
+				Details: err,
+			})
+			return
+		}
+		responses.SuccessResponse(ctx, http.StatusOK, "success", nil)
+	}
+}
+func (h *ApplicationHandler) GetUserApplications() gin.HandlerFunc {
+	return func(ctx *gin.Context) {
+
 	}
 }

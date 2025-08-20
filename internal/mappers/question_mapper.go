@@ -6,7 +6,7 @@ import (
 	"smartjob/internal/responses"
 )
 
-// REQ TO MODEL
+// Question Request To Question Model
 func QuestionRequestToQuestion(req *requests.QuestionRequest, userID uint) *models.Question {
 	var options []models.QuestionOption
 
@@ -26,7 +26,7 @@ func QuestionRequestToQuestion(req *requests.QuestionRequest, userID uint) *mode
 	}
 }
 
-// MODEL TO RESPONSE USER
+// Question Model To Response Question for User
 func QuestionToUserResponse(q *models.Question) *responses.QuestionUserResponse {
 
 	var options []responses.OptionResponse
@@ -45,7 +45,7 @@ func QuestionToUserResponse(q *models.Question) *responses.QuestionUserResponse 
 	}
 }
 
-// MODEL ARRAY TO RESPONSE USER
+// Question Slice To Response Question Slice for User
 func QuestionsToUserResponse(q []models.Question) []responses.QuestionUserResponse {
 	var questions []responses.QuestionUserResponse
 
@@ -56,7 +56,7 @@ func QuestionsToUserResponse(q []models.Question) []responses.QuestionUserRespon
 	return questions
 }
 
-// MODEL TO RESPONSE ADMIN
+// Question Model To Response Question for Admin
 func QuestionToAdminResponse(q *models.Question) *responses.QuestionAdminResponse {
 	var options []responses.OptionResponse
 	for _, opt := range q.Options {
@@ -75,7 +75,7 @@ func QuestionToAdminResponse(q *models.Question) *responses.QuestionAdminRespons
 	}
 }
 
-// MODEL ARRAY TO RESPONSE ADMIN
+// Question Slice Model To Response Question Slice for Admin
 func QuestionsToAdminResponse(q []models.Question) []responses.QuestionAdminResponse {
 	var questions []responses.QuestionAdminResponse
 

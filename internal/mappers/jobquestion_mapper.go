@@ -6,7 +6,7 @@ import (
 	"smartjob/internal/responses"
 )
 
-// REQ TO MODEL
+// Request JobQuestion Model To JobQuestion Model
 func ReqToJobQuestion(req *requests.JobQuestionRequest) (models.JobQuestion, error) {
 
 	return models.JobQuestion{
@@ -18,7 +18,7 @@ func ReqToJobQuestion(req *requests.JobQuestionRequest) (models.JobQuestion, err
 	}, nil
 }
 
-// REQ ARRAY TO MODEL
+// Request JobQuestion Slice To JobQuestion Model
 func ReqsToJobQuestion(reqs []requests.JobQuestionRequest) ([]models.JobQuestion, error) {
 	var jobQuestions []models.JobQuestion
 	for _, value := range reqs {
@@ -28,7 +28,7 @@ func ReqsToJobQuestion(reqs []requests.JobQuestionRequest) ([]models.JobQuestion
 	return jobQuestions, nil
 }
 
-// MODEL TO RESPONSE
+// JobQuestion Model To Response JobQuestion Model for User
 func JobQuestionModelToUserResponse(m models.JobQuestion) (responses.JobQuestionUserResponse, error) {
 	question := QuestionToUserResponse(&m.Question)
 	return responses.JobQuestionUserResponse{
@@ -38,7 +38,7 @@ func JobQuestionModelToUserResponse(m models.JobQuestion) (responses.JobQuestion
 	}, nil
 }
 
-// MODEL ARRAY TO RESPONSE
+// JobQuestion Slice Model To Response JobQuestion Slice Model for User
 func JobQuestionsToUserResponse(m []models.JobQuestion) ([]responses.JobQuestionUserResponse, error) {
 	var jobQuestionsResponses []responses.JobQuestionUserResponse
 
@@ -51,6 +51,8 @@ func JobQuestionsToUserResponse(m []models.JobQuestion) ([]responses.JobQuestion
 	}
 	return jobQuestionsResponses, nil
 }
+
+// JobQuestion Model To Response JobQuestion Model for Admin
 func JobQuestionModelToAdminResponse(m models.JobQuestion) (responses.JobQuestionAdminResponse, error) {
 	question := QuestionToAdminResponse(&m.Question)
 	return responses.JobQuestionAdminResponse{
@@ -62,6 +64,7 @@ func JobQuestionModelToAdminResponse(m models.JobQuestion) (responses.JobQuestio
 	}, nil
 }
 
+// JobQuestion Slice Model To Response JobQuestion Slice Model for Admin
 func JobQuestionsToAdminResponse(m []models.JobQuestion) ([]responses.JobQuestionAdminResponse, error) {
 	var jobQuestionsResponses []responses.JobQuestionAdminResponse
 

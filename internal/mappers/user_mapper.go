@@ -7,7 +7,7 @@ import (
 	"smartjob/internal/utils"
 )
 
-// REQ TO MODEL
+// Request Register To User Model
 func RegisterRequestToUser(req requests.RegisterRequest) (models.User, error) {
 
 	hashedPassword, err := utils.HashPassword(req.Password)
@@ -26,6 +26,7 @@ func RegisterRequestToUser(req requests.RegisterRequest) (models.User, error) {
 	return newUser, nil
 }
 
+// User Model To User Response
 func UserModelToResponse(user *models.User) *responses.UserResponse {
 	if user == nil {
 		return nil

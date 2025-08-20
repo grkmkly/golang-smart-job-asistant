@@ -6,7 +6,7 @@ import (
 	"smartjob/internal/responses"
 )
 
-// Req Answer TO Answer Model
+// Request Answer To Answer Model
 func ReqAnswerToAnswerModel(req requests.UserAnswerRequest) models.UserAnswer {
 	return models.UserAnswer{
 		AnswerValue: req.AnswerValue,
@@ -14,7 +14,7 @@ func ReqAnswerToAnswerModel(req requests.UserAnswerRequest) models.UserAnswer {
 	}
 }
 
-// Req Answers TO Answers Model
+// Request Answer Slice To Answers Model Slice
 func ReqAnswersToAnswersModel(req []requests.UserAnswerRequest) []models.UserAnswer {
 	var userAnswers []models.UserAnswer
 	for _, uar := range req {
@@ -24,7 +24,7 @@ func ReqAnswersToAnswersModel(req []requests.UserAnswerRequest) []models.UserAns
 	return userAnswers
 }
 
-// Req TO Model
+// Request Application To Model Application
 func ReqToApplicationModel(req *requests.ApplicationRequest, userID uint, postID uint) *models.Application {
 	answers := ReqAnswersToAnswersModel(req.Answers)
 	return &models.Application{
@@ -35,8 +35,8 @@ func ReqToApplicationModel(req *requests.ApplicationRequest, userID uint, postID
 	}
 }
 
-// APPLICATION MODEL TO RESPONSE
-func ApplicationModelToResponse(application *models.Application) (*responses.ApplicationResponse, error) {
+// Application Model To Response Application for Admin
+func ApplicationModelToResponse(application *models.Application) (*responses.ApplicationAdminResponse, error) {
 	if application == nil {
 		return nil, nil
 	}
@@ -48,59 +48,19 @@ func ApplicationModelToResponse(application *models.Application) (*responses.App
 	if err != nil {
 		return nil, err
 	}
-	response := &responses.ApplicationResponse{
+	response := &responses.ApplicationAdminResponse{
 		ApplicationID: application.ID,
 		JobPost:       *jobPost,
 		User:          *UserModelToResponse(&application.User),
 		Answer:        answer,
+		Status:        application.Status,
 	}
 	return response, nil
 }
 
-func UserAnswerToResponse(answer *models.UserAnswer) *responses.UserAnswerResponse {
-	if answer == nil {
-		return nil
-	}
-	response := &responses.UserAnswerResponse{
-		AnswerValue: answer.AnswerValue,
-		QuestionID:  answer.QuestionID,
-	}
-	return response
-}
-
-// USER ANSWERS MODELS TO RESPONSES
-func UserAnswersModelToResponseSlice(answers []models.UserAnswer) ([]responses.UserAnswerResponse, error) {
-	var userAnswerResponses []responses.UserAnswerResponse
-	for _, answer := range answers {
-		response := UserAnswerToResponse(&answer)
-		userAnswerResponses = append(userAnswerResponses, *response)
-	}
-	return userAnswerResponses, nil
-}
-
-func UserAnswerAdminToResponse(answer *models.UserAnswer) *responses.UserAnswerAdminResponse {
-	if answer == nil {
-		return nil
-	}
-	response := &responses.UserAnswerAdminResponse{
-		AnswerValue: answer.AnswerValue,
-		QuestionID:  answer.QuestionID,
-	}
-	return response
-}
-
-func UserAnswersAdminToResponseSlice(answers []models.UserAnswer) ([]responses.UserAnswerAdminResponse, error) {
-	var userAnswerAdminResponses []responses.UserAnswerAdminResponse
-	for _, answer := range answers {
-		response := UserAnswerAdminToResponse(&answer)
-		userAnswerAdminResponses = append(userAnswerAdminResponses, *response)
-	}
-	return userAnswerAdminResponses, nil
-}
-
-// APPLICATION MODELS TO RESPONES
-func ApplicationModelsToResponseSlice(applications []models.Application) ([]responses.ApplicationResponse, error) {
-	var responses []responses.ApplicationResponse
+// Application Slice Model To Response Application Slice for Admin
+func ApplicationModelsToAdminResponseSlice(applications []models.Application) ([]responses.ApplicationAdminResponse, error) {
+	var responses []responses.ApplicationAdminResponse
 	for _, application := range applications {
 		response, err := ApplicationModelToResponse(&application)
 		if err != nil {
@@ -109,4 +69,23 @@ func ApplicationModelsToResponseSlice(applications []models.Application) ([]resp
 		responses = append(responses, *response)
 	}
 	return responses, nil
+}
+
+// Application Model To Response Application for User
+func ApplicationModelToUserResponse(application *models.Application) *responses.ApplicationUserResponse {
+	return &responses.ApplicationUserResponse{
+		ApplicationID: application.ID,
+		Status:        application.Status,
+		JobPost:       *JobPostModelToUserResponse(&application.JobPost),
+	}
+}
+
+// Application Slice Model To Response Application Slice for User
+func ApplicationModelsToUserResponseSlice(applications []models.Application) []responses.ApplicationUserResponse {
+	var userResponses []responses.ApplicationUserResponse
+	for _, app := range applications {
+		response := ApplicationModelToUserResponse(&app)
+		userResponses = append(userResponses, *response)
+	}
+	return userResponses
 }

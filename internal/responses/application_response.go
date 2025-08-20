@@ -1,10 +1,17 @@
 package responses
 
-type ApplicationResponse struct {
-	ApplicationID uint                      `json:"application"`
+type ApplicationAdminResponse struct {
+	ApplicationID uint                      `json:"application_id"`
 	User          UserResponse              `json:"user"`
 	JobPost       JobPostAdminResponse      `json:"job_post"`
+	Status        string                    `json:"status"`
 	Answer        []UserAnswerAdminResponse `json:"answers"`
+}
+
+type ApplicationUserResponse struct {
+	ApplicationID uint                `json:"application_id"`
+	JobPost       JobPostUserResponse `json:"job_post"`
+	Status        string              `json:"status"`
 }
 
 type UserAnswerResponse struct {

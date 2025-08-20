@@ -53,6 +53,7 @@ func (h *JobPostHandler) ListJobPosts() gin.HandlerFunc {
 		responses.SuccessResponse(ctx, http.StatusOK, "success", jobposts)
 	}
 }
+
 func (h *JobPostHandler) ListJobPostsForAdmin() gin.HandlerFunc {
 	return func(ctx *gin.Context) {
 		jobposts, err := h.JobPostService.GetActiveAndNotExpiredPostForAdmin()

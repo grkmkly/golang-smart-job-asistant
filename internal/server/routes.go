@@ -13,28 +13,33 @@ func (s *Server) SetupRoutes() {
 	protected := s.Router.Group("/api")
 	protected.Use(auth.AuthMiddleWare())
 	{
-		protected.GET("/profile", s.UserHandler.GetProfile())
+		protected.GET("/profile", s.UserHandler.GetProfile()) // GET PROFILE
 
-		protected.GET("/announcements", s.AnnouncementHandler.GetAnnouncements())
+		protected.GET("/announcements", s.AnnouncementHandler.GetAnnouncements()) // GET ANNOUNCEMENTS
 
-		protected.GET("/jobposts", s.JobPostHandler.ListJobPosts())
-		protected.GET("jobquestions/:jobpostID", s.JobQuestionHandler.GetQuestionUserForPost())
+		protected.GET("/jobposts", s.JobPostHandler.ListJobPosts()) // GET ACTIVE JOB
 
-		protected.POST("/applications/:jobpostID", s.ApplicationHandler.SubmitApplication())
+		protected.GET("jobquestions/:jobpostID", s.JobQuestionHandler.GetQuestionUserForPost()) // GET QUESTION FOR JOB
+
+		protected.POST("/jobposts/:jobpostID/applications", s.ApplicationHandler.SubmitApplication()) // POST APPLICATION
+
+		protected.GET("/users/:userID/status", s.ApplicationHandler.UpdateStatus()) // GET APPLICATION STATUS FOR USER
 
 		admin := protected.Group("admin")
 		admin.Use(auth.AuthAdminMiddleWare())
 		{
-			admin.POST("/announcements", s.AnnouncementHandler.CreateAnnouncement())
+			admin.POST("/announcements", s.AnnouncementHandler.CreateAnnouncement()) // POST ANNOUNCEMENTS
 
-			admin.POST("/jobposts", s.JobPostHandler.CreateNewJobPost())
-			admin.GET("/jobposts", s.JobPostHandler.ListJobPostsForAdmin())
-			admin.GET("/jobposts/:jobpostID", s.JobQuestionHandler.GetQuestionAdminForPost())
+			admin.POST("/jobposts", s.JobPostHandler.CreateNewJobPost())                      // POST NEW JOB
+			admin.GET("/jobposts", s.JobPostHandler.ListJobPostsForAdmin())                   // LIST JOB POST FOR ADMIN (WITH CRITERIA)
+			admin.GET("/jobposts/:jobpostID", s.JobQuestionHandler.GetQuestionAdminForPost()) // GET QUESTION FOR POST
 
-			admin.POST("/questions", s.QuestionHandler.CreateQuestion())
-			admin.GET("/questions", s.QuestionHandler.GetQuestionWithOption())
-			admin.POST("/jobquestions", s.JobQuestionHandler.CreateJobQuestion())
-			admin.GET("/applications/:post_id", s.ApplicationHandler.GetApplicationsByPostID())
+			admin.POST("/questions", s.QuestionHandler.CreateQuestion())          // POST NEW QUESTION
+			admin.GET("/questions", s.QuestionHandler.GetQuestionWithOption())    // GET QUESTION WITH OPTION
+			admin.POST("/jobquestions", s.JobQuestionHandler.CreateJobQuestion()) // JOB POST NEW QUESTION
+
+			admin.GET("/jobposts/:jobpostID/applications", s.ApplicationHandler.GetApplicationsByPostID()) // GET APPLICATION
+			admin.PUT("/applications/:applicationID/status", s.ApplicationHandler.UpdateStatus())          // UPDATE STATUS
 		}
 	}
 }
