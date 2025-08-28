@@ -107,6 +107,15 @@ func (h *ApplicationHandler) UpdateStatus() gin.HandlerFunc {
 }
 func (h *ApplicationHandler) GetUserApplications() gin.HandlerFunc {
 	return func(ctx *gin.Context) {
-
+		userID, _ := ctx.Get("user_id")
+		applications, err := h.ApplicationService.GetApplicationForUser(userID.(uint))
+		if err != nil {
+			responses.ErrorResponse(ctx, http.StatusBadRequest, "GET_APPLICATIONS_ERROR", &responses.APIError{
+				Code:    "SERVICE_ERROR",
+				Details: err,
+			})
+			return
+		}
+		responses.SuccessResponse(ctx, http.StatusOK, "success", applications)
 	}
 }

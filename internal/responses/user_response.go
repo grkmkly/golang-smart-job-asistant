@@ -5,4 +5,5 @@ type UserResponse struct {
 	FirstName string `json:"first_name"`
 	Surname   string `json:"surname"`
 	Email     string `json:"email"`
+	RoleID    uint	 `json:"role_id"`
 }

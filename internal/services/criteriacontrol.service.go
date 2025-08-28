@@ -37,9 +37,12 @@ func (s *CriteriaControlService) CriteriaControl(application models.Application)
 			break
 		}
 	}
+	jobpostAdmin, _ := mappers.JobPostModelToAdminResponse(&application.JobPost)
 
 	response := responses.ResponseSuitable{
 		ApplicationID: application.ID,
+		JobPost:       *jobpostAdmin,
+		Status:        application.Status,
 		User:          *mappers.UserModelToResponse(&application.User),
 		Answers:       answers,
 		IsSuitable:    appIsSuitable,
@@ -51,10 +54,38 @@ func (s *CriteriaControlService) checkAnswerSuitability(userAnswer *models.UserA
 	for _, jq := range jobQuestions {
 		if jq.QuestionID == userAnswer.QuestionID {
 			if strings.Contains(strings.ToLower(jq.Question.Type), "dropdown") {
-				return strings.EqualFold(jq.CriteriaValue, userAnswer.AnswerValue)
+				userAnswerPriority := getPriorityForAnswer(jq.Question, userAnswer.AnswerValue)
+				criteriaPriority := getPriorityForAnswer(jq.Question, jq.CriteriaValue)
+				switch jq.CriteriaOperator {
+				case "==":
+					return userAnswerPriority == criteriaPriority
+				case "!=":
+					return userAnswerPriority != criteriaPriority
+				case ">":
+					return userAnswerPriority > criteriaPriority
+				case "<":
+					return userAnswerPriority < criteriaPriority
+				case ">=":
+					return userAnswerPriority >= criteriaPriority
+				case "<=":
+					return userAnswerPriority <= criteriaPriority
+				default:
+					return true
+				}
 			}
-			return true
+			if strings.Contains(strings.ToLower(jq.Question.Type), "text") {
+				return true
+			}
+			return false
 		}
 	}
-	return true
+	return false
+}
+func getPriorityForAnswer(question models.Question, answerValue string) int {
+	for _, option := range question.Options {
+		if strings.EqualFold(option.OptionValue, answerValue) {
+			return option.Priority
+		}
+	}
+	return 0
 }

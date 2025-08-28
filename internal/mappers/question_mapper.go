@@ -39,6 +39,7 @@ func QuestionToUserResponse(q *models.Question) *responses.QuestionUserResponse 
 		options = append(options, option)
 	}
 	return &responses.QuestionUserResponse{
+		ID:      q.ID,
 		Content: q.Content,
 		Type:    q.Type,
 		Options: options,
@@ -68,6 +69,7 @@ func QuestionToAdminResponse(q *models.Question) *responses.QuestionAdminRespons
 		options = append(options, option)
 	}
 	return &responses.QuestionAdminResponse{
+		ID:        q.ID,
 		Content:   q.Content,
 		Type:      q.Type,
 		Options:   options,

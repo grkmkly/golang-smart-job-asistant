@@ -5,6 +5,5 @@ type JobQuestionRequest struct {
 	CriteriaOperator string `json:"criteria_operator"`
 	QuestionOrder    int    `json:"column:question_order"`
 	QuestionID       uint   `json:"question_id"`
-
-	JobPostID uint `json:"jobpost_id"`
+	JobPostID        uint   `json:"jobpost_id"`
 }

@@ -23,7 +23,7 @@ func (s *Server) SetupRoutes() {
 
 		protected.POST("/jobposts/:jobpostID/applications", s.ApplicationHandler.SubmitApplication()) // POST APPLICATION
 
-		protected.GET("/users/:userID/status", s.ApplicationHandler.UpdateStatus()) // GET APPLICATION STATUS FOR USER
+		protected.GET("/me/applications/status", s.ApplicationHandler.GetUserApplications()) // GET APPLICATION STATUS FOR USER
 
 		admin := protected.Group("admin")
 		admin.Use(auth.AuthAdminMiddleWare())

@@ -5,6 +5,7 @@ import (
 )
 
 type JobPostUserResponse struct {
+	ID          uint      `json:"id"`
 	Title       string    `json:"title"`
 	Content     string    `json:"content"`
 	EndAt       time.Time `json:"end_at"`

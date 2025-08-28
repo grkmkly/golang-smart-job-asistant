@@ -3,6 +3,7 @@ package handlers
 import (
 	"log"
 	"net/http"
+	"smartjob/internal/responses"
 	"smartjob/internal/services"
 
 	"github.com/gin-gonic/gin"
@@ -22,11 +23,17 @@ func (h *UserHandler) GetProfile() gin.HandlerFunc {
 	return func(ctx *gin.Context) {
 		userID_interface, exists := ctx.Get("user_id")
 		if !exists {
-			ctx.JSON(http.StatusUnauthorized, gin.H{"error": "No Authentication"})
+			responses.ErrorResponse(ctx, http.StatusInternalServerError, "GET_PROFILE_ERROR", &responses.APIError{
+				Code:    "AUTHENCTICATION_ERROR",
+				Details: "",
+			})
 		}
 		userID, OK := userID_interface.(uint)
 		if !OK {
-			ctx.JSON(http.StatusUnauthorized, gin.H{"error": "UserID is not valid"})
+			responses.ErrorResponse(ctx, http.StatusInternalServerError, "GET_PROFILE_ERROR", &responses.APIError{
+				Code:    "INTERFACE_ERROR",
+				Details: "",
+			})
 		}
 
 		user, err := h.UserService.GetUserProfile(userID)
@@ -34,6 +41,6 @@ func (h *UserHandler) GetProfile() gin.HandlerFunc {
 			log.Fatal("UserID Error", err)
 			ctx.JSON(http.StatusUnauthorized, gin.H{"error": err})
 		}
-		ctx.JSON(http.StatusOK, user)
+		responses.SuccessResponse(ctx, http.StatusOK, "success", user)
 	}
 }

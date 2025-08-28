@@ -26,6 +26,7 @@ func JobPostRequestToJobPost(req *requests.JobPostRequest, userID uint) (*models
 // JobPost Model To Response JobPost for User
 func JobPostModelToUserResponse(jobPost *models.JobPost) *responses.JobPostUserResponse {
 	return &responses.JobPostUserResponse{
+		ID:          jobPost.ID,
 		Title:       jobPost.Title,
 		Content:     jobPost.Content,
 		EndAt:       jobPost.EndAt,

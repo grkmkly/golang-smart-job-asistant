@@ -5,6 +5,7 @@ import (
 )
 
 type QuestionUserResponse struct {
+	ID      uint             `json:"id"`
 	Content string           `json:"content"`
 	Type    string           `json:"type"`
 	Options []OptionResponse `json:"options"`
@@ -14,6 +15,7 @@ type OptionResponse struct {
 	Value string `json:"value"`
 }
 type QuestionAdminResponse struct {
+	ID        uint             `json:"id"`
 	Content   string           `json:"content"`
 	Type      string           `json:"type"`
 	Options   []OptionResponse `json:"options"`

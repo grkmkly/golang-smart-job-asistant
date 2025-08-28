@@ -37,6 +37,7 @@ func UserModelToResponse(user *models.User) *responses.UserResponse {
 		FirstName: user.FirstName,
 		Surname:   user.Surname,
 		Email:     user.Email,
+		RoleID:    user.RoleID,
 	}
 	return response
 }
